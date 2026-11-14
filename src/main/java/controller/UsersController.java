@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import jakarta.servlet.ServletException;
@@ -12,8 +13,7 @@ import model.ModelException;
 import model.User;
 import model.dao.DAOFactory;
 import model.dao.UserDAO;
-
-import java.sql.SQLIntegrityConstraintViolationException;
+import model.utils.PasswordEncryptor;
 
 @WebServlet(urlPatterns = {"/users", "/user/form", "/user/delete", "/user/insert", "/user/update"})
 public class UsersController extends HttpServlet {
@@ -119,11 +119,16 @@ public class UsersController extends HttpServlet {
 		String userName = req.getParameter("name");
 		String userGender = req.getParameter("gender");
 		String userEMail = req.getParameter("mail");
+		String userPW = req.getParameter("user_pw");
 		
 		User user = new User();
 		user.setName(userName);
 		user.setGender(userGender);
 		user.setEmail(userEMail);
+		user.setPassword(userPW);
+		
+		String hashPW = PasswordEncryptor.hashPassword(userPW);
+		user.setPassword(hashPW);
 		
 		UserDAO dao = DAOFactory.createDAO(UserDAO.class);
 		
@@ -146,11 +151,16 @@ public class UsersController extends HttpServlet {
 		String userName = req.getParameter("name");
 		String userGender = req.getParameter("gender");
 		String userEMail = req.getParameter("mail");
+		String userPW = req.getParameter("user_pw");
 		
 		User user = loadUser(req);
 		user.setName(userName);
 		user.setGender(userGender);
 		user.setEmail(userEMail);
+		user.setPassword(userPW);
+		
+		String hashPW = PasswordEncryptor.hashPassword(userPW);
+		user.setPassword(hashPW);
 		
 		UserDAO dao = DAOFactory.createDAO(UserDAO.class);
 		

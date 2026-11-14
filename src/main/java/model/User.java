@@ -5,6 +5,8 @@ public class User {
 	private String name;
 	private String gender;
 	private String email;
+	private String password;
+	private String passwordHash;
 	
 	public User() {
 		this(0);
@@ -15,6 +17,23 @@ public class User {
 		setName("");
 		setGender("");
 		setEmail("");
+		setPassword("");
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
 	}
 
 	public String getName() {
