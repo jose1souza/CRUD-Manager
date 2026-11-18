@@ -21,7 +21,8 @@ public class AuthFilter implements Filter {
 		var httpResp = (HttpServletResponse) resp;
 
 		boolean userIsLogged = httpReq.getSession().getAttribute("user_logged") != null;
-		boolean isPublicResource = httpReq.getRequestURI().endsWith(".css") || httpReq.getRequestURI().endsWith(".js");
+		boolean isPublicResource = httpReq.getRequestURI().endsWith(".css") || httpReq.getRequestURI().endsWith(".js")
+				|| httpReq.getRequestURI().endsWith(".ico") || httpReq.getRequestURI().endsWith(".png");
 		boolean isLogin = httpReq.getRequestURI().contains("login");
 
 		if (userIsLogged || isLogin || isPublicResource) {

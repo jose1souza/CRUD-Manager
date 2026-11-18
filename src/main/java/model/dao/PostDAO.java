@@ -11,4 +11,6 @@ public interface PostDAO {
 	boolean delete(Post post) throws ModelException;
 	List<Post> listAll() throws ModelException;
 	Post findById(int id) throws ModelException;
+	int count() throws ModelException;
+	List<Post> listPaginated(int currentPage, int pageSize) throws ModelException;
 }

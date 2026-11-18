@@ -104,8 +104,36 @@ public class UsersController extends HttpServlet {
 		UserDAO dao = DAOFactory.createDAO(UserDAO.class);
 		
 		List<User> users = null;
+		int pageSize = 5;
+		int currentPage = 1;
+
+		String pageParam = req.getParameter("page");
+		if (pageParam != null && !pageParam.isEmpty()) {
+			try {
+				currentPage = Integer.parseInt(pageParam);
+			} catch (NumberFormatException nfe) {
+				currentPage = 1;
+			}
+		}
+
 		try {
-			users = dao.listAll();
+			int totalyUsers = dao.count();
+			int totalPages = (int) Math.ceil((double) totalyUsers / pageSize);
+			if (currentPage < 1)
+				currentPage = 1;
+			if (currentPage > totalPages && totalPages > 0)
+				currentPage = totalPages;
+			users = dao.listPaginated(currentPage, pageSize);
+
+			req.setAttribute("users", users);
+
+        	req.setAttribute("currentPage", currentPage);
+
+        	req.setAttribute("totalPages", totalPages);
+
+        	req.setAttribute("totalRecords", totalyUsers);		
+			req.setAttribute("pageUrl",
+			req.getContextPath() + "/users");	
 		} catch (ModelException e) {
 			// Log no servidor
 			e.printStackTrace();
@@ -157,10 +185,11 @@ public class UsersController extends HttpServlet {
 		user.setName(userName);
 		user.setGender(userGender);
 		user.setEmail(userEMail);
-		user.setPassword(userPW);
 		
-		String hashPW = PasswordEncryptor.hashPassword(userPW);
-		user.setPassword(hashPW);
+		if (userPW != null && !userPW.trim().isEmpty()) {
+			String hashPW = PasswordEncryptor.hashPassword(userPW);
+			user.setPassword(hashPW);
+		}
 		
 		UserDAO dao = DAOFactory.createDAO(UserDAO.class);
 		
@@ -196,15 +225,11 @@ public class UsersController extends HttpServlet {
 				ControllerUtil.sucessMessage(req, "Usuário '" + user.getName() + "' deletado com sucesso.");
 			}
 			else {
-				ControllerUtil.errorMessage(req, "Usuário '" + user.getName() + "' não pode ser deletado. Há dados relacionados ao usuário.");
+				ControllerUtil.errorMessage(req, "Usuário '" + user.getName() + "' não pode ser deletado. Pois há dados relacionados ao usuário.");
 			}
-		} catch (ModelException e) {
-			// log no servidor
-			if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
-				ControllerUtil.errorMessage(req, e.getMessage());
-			}
-			e.printStackTrace();
-			ControllerUtil.errorMessage(req, e.getMessage());
+		} catch (ModelException me) {
+			me.printStackTrace();
+			ControllerUtil.errorMessage(req, me.getMessage());
 		}
 	}
 }

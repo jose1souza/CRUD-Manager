@@ -12,4 +12,6 @@ public interface UserDAO {
 	List<User> listAll() throws ModelException;
 	User findById(int id) throws ModelException;
 	User findByEmail(String email) throws ModelException;
+	int count() throws ModelException;
+	List<User> listPaginated(int page, int pageSize) throws ModelException;
 }

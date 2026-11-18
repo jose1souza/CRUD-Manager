@@ -116,4 +116,46 @@ public class MySQLPostDAO implements PostDAO {
 		
 		return p;
 	}
+
+	public int count() throws ModelException {
+		DBHandler db = new DBHandler();
+		
+		String sql = "SELECT COUNT(*) AS total FROM posts;";
+		
+		db.createStatement();
+		db.executeQuery(sql);
+		
+		if (db.next()) {
+			return db.getInt("total");
+		}
+		
+		return 0;
+	}
+
+	public List<Post> listPaginated(int currentPage, int pageSize) throws ModelException {
+		DBHandler db = new DBHandler();
+		
+		List<Post> posts = new ArrayList<Post>();
+		
+		String sqlQuery = " SELECT u.id AS user_id, p.*, "
+				        + " p.post_date "
+				        + " FROM users u "
+				        + " INNER JOIN posts p "
+				        + " ON u.id = p.user_id "
+				        + " ORDER BY content "
+				        + " LIMIT ? OFFSET ?;";
+		
+		db.prepareStatement(sqlQuery);
+		db.setInt(1, pageSize);
+		db.setInt(2, (currentPage - 1) * pageSize);
+		db.executeQuery();
+		
+		while (db.next()) {
+			Post p = createPost(db);
+			
+			posts.add(p);
+		}
+		
+		return posts;
+	}
 }

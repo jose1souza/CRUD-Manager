@@ -16,7 +16,7 @@
 				<input type="hidden" value="${post.getId()}" name="postId">
 				<div class="row">
 					<div class="form-group col-md-6">
-					<label for="content">Conteúdo</label>
+					<label for="content">Conteúdo *</label>
 						<input type="text" class="form-control" id="content" name="content" 
 							   autofocus="autofocus" placeholder="Conteúdo do post" 
 							   required oninvalid="this.setCustomValidity('Por favor, informe o conteúdo do post.')"
@@ -25,7 +25,7 @@
 					</div>
 
 					<div class="form-group col-md-6">
-						<label for="user">Usuário</label>
+						<label for="user">Usuário *</label>
 						<select id="user" class="form-control selectpicker" name="user" 
 							    required oninvalid="this.setCustomValidity('Por favor, informe o usuário.')"
 							    oninput="setCustomValidity('')">

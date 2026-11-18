@@ -67,8 +67,36 @@ public class CompaniesController extends HttpServlet{
 		CompanyDAO dao = DAOFactory.createDAO(CompanyDAO.class);
 		
 		List<Company> companies = null;
+		int currentPage = 1;
+		int pageSize = 5;
+
+		String pageParam = req.getParameter("page");
+		if (pageParam != null) {
+			try {
+				currentPage = Integer.parseInt(pageParam);
+			} catch (NumberFormatException e) {
+				currentPage = 1;
+			}
+		}
 		try {
-			companies = dao.listAll();
+			int totalCompanies = dao.count();
+			int totalPages = (int) Math.ceil((double) totalCompanies / pageSize);
+			if (currentPage < 1) {
+				currentPage = 1;
+			}
+			if (currentPage > totalPages && totalPages > 0) {
+				currentPage = totalPages;
+			}
+			companies = dao.listPaginated(currentPage, pageSize);
+
+			req.setAttribute("companies", companies);
+
+			req.setAttribute("currentPage", currentPage);
+
+			req.setAttribute("totalPages", totalPages);
+
+			req.setAttribute("pageUrl", req.getContextPath() + "/companies");
+
 		} catch (ModelException e) {
 			// Log no servidor
 			e.printStackTrace();
@@ -162,16 +190,11 @@ public class CompaniesController extends HttpServlet{
 			else {
 				ControllerUtil.errorMessage(req, "Empresa '" + 
 						company.getName() + "' não pode ser deletado. "
-								+ "Há dados relacionados à empresa.");
+								+ "Pois há dados relacionados à empresa.");
 			}
-		} catch (ModelException e) {
-			// log no servidor
-			if (e.getCause() instanceof 
-					SQLIntegrityConstraintViolationException) {
-				ControllerUtil.errorMessage(req, e.getMessage());
-			}
-			e.printStackTrace();
-			ControllerUtil.errorMessage(req, e.getMessage());
+		} catch (ModelException me) {
+			me.printStackTrace();
+			ControllerUtil.errorMessage(req, me.getMessage());
 		}
 	}
 

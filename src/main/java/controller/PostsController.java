@@ -18,7 +18,7 @@ import model.dao.PostDAO;
 @SuppressWarnings("serial")
 // Herda da classe HttpServlet (extends HttpServlet) para ser tratada como um Servlet
 // Anota a classe (@WebServlet) ajustando as URLs (urlPatterns) as quais ela responde
-@WebServlet(urlPatterns = {"", "/posts", "/post/form", "/post/delete", "/post/insert", "/post/update"})
+@WebServlet(urlPatterns = {"/posts", "/post/form", "/post/delete", "/post/insert", "/post/update"})
 public class PostsController extends HttpServlet {
 	
 	// Sobrescreve o método doGet, sendo capaz de responder métodos HTTP GET
@@ -46,7 +46,7 @@ public class PostsController extends HttpServlet {
 			
 			ControllerUtil.transferSessionMessagesToRequest(req);
 		
-			ControllerUtil.forward(req, resp, "/index.jsp");
+			ControllerUtil.forward(req, resp, "/posts.jsp");
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class PostsController extends HttpServlet {
 		String action = req.getRequestURI();
 		
 		if (action == null || action.equals("") ) {
-			ControllerUtil.forward(req, resp, "/index.jsp");
+			ControllerUtil.forward(req, resp, "/posts.jsp");
 			return;
 		}
 		
@@ -182,8 +182,34 @@ public class PostsController extends HttpServlet {
 		PostDAO dao = DAOFactory.createDAO(PostDAO.class);
 		
 		List<Post> posts = null;
+		int pageSize = 5;
+		int currentPage = 1;
+
+		String pageParam = req.getParameter("page");
+		if (pageParam != null && !pageParam.isEmpty()){
+			try{
+				currentPage = Integer.parseInt(pageParam);
+			} catch (NumberFormatException nfe){
+				currentPage = 1;
+			}
+		}
 		try {
-			posts = dao.listAll();
+			int totalPosts = dao.count();
+			int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
+			if ( currentPage < 1)
+				currentPage = 1;
+			if (currentPage > totalPages && totalPages > 0)
+				currentPage = totalPages;
+			posts = dao.listPaginated(currentPage, pageSize);
+
+			req.setAttribute("totalPages", totalPages);
+
+			req.setAttribute("currentPage", currentPage);
+
+			req.setAttribute("totalPosts", totalPosts);
+
+			req.setAttribute("pageUrl",
+				 req.getContextPath() + "/posts");
 		} catch (ModelException e) {
 			// Log no servidor
 			e.printStackTrace();

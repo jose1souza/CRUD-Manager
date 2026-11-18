@@ -1,5 +1,6 @@
 package model.dao;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,7 +71,15 @@ public class MySQLCompanyDAO implements CompanyDAO {
 		db.prepareStatement(sqlDelete);		
 		db.setInt(1, company.getId());
 		
-		return db.executeUpdate() > 0;
+		try {
+			return db.executeUpdate() > 0;
+		} catch (ModelException me){
+			if(me.getCause() instanceof SQLIntegrityConstraintViolationException)
+				return false;
+				
+			throw me;
+		}
+		
 	}
 
 	@Override
@@ -134,5 +143,59 @@ public class MySQLCompanyDAO implements CompanyDAO {
 		}
 		
 		return c;
+	}
+
+	@Override
+	public int count() throws ModelException {
+		DBHandler db = new DBHandler();
+		String sql = "SELECT COUNT(*) AS total FROM companies;";
+		db.prepareStatement(sql);
+		db.executeQuery();
+		
+		if (db.next()) {
+			return db.getInt("total");
+		}
+		return 0;
+	}
+
+	@Override
+	public List<Company> listPaginated(int currentPage, int pageSize) throws ModelException {
+		DBHandler db = new DBHandler();
+		List<Company> companies = new ArrayList<Company>();
+
+		int offset = (currentPage - 1) * pageSize;
+
+		String sql = "SELECT c.id as 'company_id', c.*, u.* "
+				+ " FROM companies c "
+				+ " LEFT JOIN users u ON c.user_id = u.id "
+				+ " ORDER BY c.id "
+				+ " LIMIT ?, ?;";
+
+		db.prepareStatement(sql);
+		db.setInt(1, offset);
+		db.setInt(2, pageSize);
+		db.executeQuery();
+
+		while (db.next()) {
+			User user = null;
+			int userId = db.getInt("user_id");
+			if (userId > 0) {
+				user = new User(userId);
+				user.setName(db.getString("nome"));
+				user.setGender(db.getString("sexo"));
+				user.setEmail(db.getString("email"));
+			}
+
+			Company company = new Company(db.getInt("company_id"));
+			company.setName(db.getString("name"));
+			company.setRole(db.getString("role"));
+			company.setStart(db.getDate("start"));
+			company.setEnd(db.getDate("end"));
+			company.setUser(user);
+
+			companies.add(company);
+		}
+
+		return companies;
 	}
 }

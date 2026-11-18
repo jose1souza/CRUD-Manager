@@ -4,61 +4,47 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Login - CRUD Manager</title>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/bootstrap.min.css" />
-
-<style>
-.hidden {
-	display: none;
-}
-</style>
+	<%@include file="base-head.jsp"%>
+	<title>Login - CRUD Manager</title>
 </head>
 <body>
 	<!-- Navbar -->
 	<%@include file="nav-menu-login.jsp"%>
 
-	<main
-		class="flex-grow-1 d-flex justify-content-center align-items-center">
-		<div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
-			<h2 class="text-center mb-4">Login</h2>
-			<form action="/crud-manager/login" method="POST">
-				<div class="mb-3">
-					<label for="user_login_id" class="form-label">Login
-						(e-mail)</label> <input type="text" class="form-control"
-						id="user_login_id" name="user_login" required />
-				</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title text-center">Login</h3>
+					</div>
+					<div class="panel-body">
+						<form action="${pageContext.request.contextPath}/login" method="POST">
+							<div class="form-group">
+								<label for="user_login_id">Login (e-mail)</label>
+								<input type="text" class="form-control" id="user_login_id" name="user_login" required />
+							</div>
 
-				<div class="mb-3">
-					<label for="user_pw_id" class="form-label">Senha</label> <input
-						type="password" class="form-control" id="user_pw_id"
-						name="user_pw" required />
-				</div>
+							<div class="form-group">
+								<label for="user_pw_id">Senha</label>
+								<input type="password" class="form-control" id="user_pw_id" name="user_pw" required />
+							</div>
 
-				<div class="d-grid mb-3">
-					<button type="submit" class="btn btn-dark btn-lg">Logar</button>
-				</div>
+							<div class="form-group">
+								<button type="submit" class="btn btn-danger btn-block">Logar</button>
+							</div>
 
-				<c:if test="${param.erro == 'true'}">
-					<span class="text-danger small">Usuário ou senha inválidos.</span>
-				</c:if>
-			</form>
+							<c:if test="${param.erro == 'true'}">
+								<div class="text-danger small text-center">Usuário ou senha inválidos.</div>
+							</c:if>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
-	</main>
-
-	<footer class="bg-dark text-white text-center py-3 mt-auto">
-		<div class="container">
-			<jsp:useBean id="date" class="java.util.Date" />
-			<fmt:formatDate value="${date}" pattern="yyyy" var="currentYear" />
-			<p class="mb-0">
-				©
-				<c:out value="${currentYear}" />
-				CRUD Manager. Todos os direitos reservados.
-			</p>
-		</div>
-	</footer>
 	</div>
+
+	<%@include file="footer.jsp"%>
 </body>
+</html>
 </html>

@@ -10,7 +10,7 @@
 	<%@include file="nav-menu.jsp"%>
 	
 	<div id="container" class="container-fluid">
-		<h3 class="page-header">${not empty company ? 'Atualizar' : 'Adicionar'} Empresa</h3>
+		<h3 class="page-header">$Adicionar Empresa</h3>
 		
 		<form action="${pageContext.request.contextPath}/company/${action}" 
 			method="POST">
@@ -19,7 +19,7 @@
 			
 			<div class="row">
 				<div class="form-group col-md-6">
-					<label for="name">Nome</label>
+					<label for="name">Nome *</label>
 					<input type="text" class="form-control" id="name" name="name" 
 						   autofocus="autofocus" placeholder="Nome Empresa" 
 						   required 
@@ -29,9 +29,9 @@
 				</div>
 				
 				<div class="form-group col-md-6">
-					<label for="role">Cargo</label>
+					<label for="role">Cargo *</label>
 					<input type="text" class="form-control" id="role" name="role" 
-						   autofocus="autofocus" placeholder="Cargo ocupado" 
+						   placeholder="Cargo ocupado" 
 						   required 
 						   oninvalid="this.setCustomValidity('Por favor, informe o cargo.')"
 						   oninput="setCustomValidity('')" 
@@ -41,9 +41,9 @@
 			
 			<div class="row">
 				<div class="form-group col-md-4">
-					<label for="start">Data início</label>
+					<label for="start">Data início *</label>
 					<input type="date" class="form-control" id="start" name="start" 
-						   autofocus="autofocus" placeholder="Data de início" 
+						   placeholder="Data de início" 
 						   required 
 						   oninvalid="this.setCustomValidity('Por favor, informe a data de início.')"
 						   oninput="setCustomValidity('')"
@@ -51,21 +51,22 @@
 				</div>
 				
 				<div class="form-group col-md-4">
-					<label for="end">Data saída</label>
+					<label for="end">Data saída *</label>
 					<input type="date" class="form-control" id="end" name="end" 
-						   autofocus="autofocus" placeholder="Data de saída"				    
-						   oninvalid="this.setCustomValidity('Por favor, informe a data de saída')"
+						   placeholder="Data de saída"				    
+						   required
+						   oninvalid="this.setCustomValidity('Por favor, informe a data de saída.')"
 						   oninput="setCustomValidity('')"
 						   value="${company.getEnd()}"/>
 				</div>
 				
 				<div class="form-group col-md-4">
-					<label for="user">Usuário</label>
+					<label for="user">Usuário *</label>
 					<select id="user" class="form-control selectpicker" name="user" 
 						    required oninvalid="this.setCustomValidity('Por favor, informe o usuário.')"
 						    oninput="setCustomValidity('')">
 					  
-					  <option value="" ${not empty company ? "" : 'selected'} >
+					  <option value="" disabled ${not empty company ? "" : 'selected'} >
 					  	Selecione um usuário
 					  </option>
 					  

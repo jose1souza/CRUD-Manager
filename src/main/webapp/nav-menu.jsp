@@ -16,14 +16,15 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="${pageContext.request.contextPath}"><span class="glyphicon glyphicon-home" /><strong>&nbspInício</strong></a></li>
 				<li><a href="${pageContext.request.contextPath}/users"><span class="glyphicon glyphicon-user" /><strong>&nbspUsuários</strong></a></li>
-				<li><a href="${pageContext.request.contextPath}"><span class="glyphicon glyphicon-pencil" /><strong>&nbspPosts</strong></a></li>
+				<li><a href="${pageContext.request.contextPath}/posts"><span class="glyphicon glyphicon-pencil" /><strong>&nbspPosts</strong></a></li>
 				<li><a href="${pageContext.request.contextPath}/companies"><span class="glyphicon glyphicon-pushpin" /><strong>&nbspEmpresas</strong></a></li>
+				<li><a href="${pageContext.request.contextPath}/movies"><span class="glyphicon glyphicon-film" /><strong>&nbspFilmes</strong></a></li>
+				<li><a href="${pageContext.request.contextPath}/tickets"><span class="glyphicon glyphicon-list-alt" /><strong>&nbspIngressos</strong></a></li>
 				<li class="dropdown">
-			        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><strong>Perfil</strong>
+			        <a class="dropdown-toggle" data-toggle="dropdown" href="${pageContext.request.contextPath}/#"><strong>Perfil</strong>
 			        <span class="caret"></span></a>
 			        <ul class="dropdown-menu">
-			          <li><a href="#"><span class="glyphicon glyphicon-cog" /></span>&nbspDados cadastrais</a></li>
-			          <li><a href="#"><span class="glyphicon glyphicon-log-out" /></span>&nbspSair</a></li>
+			          <li><a href="${pageContext.request.contextPath}/logout"><span class="glyphicon glyphicon-log-out" /></span>&nbspSair</a></li>
 			        </ul>
 			    </li>
 			</ul>

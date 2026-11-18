@@ -11,4 +11,6 @@ public interface CompanyDAO {
 	boolean delete(Company company) throws ModelException;
 	List<Company> listAll() throws ModelException;
 	Company findById(int id) throws ModelException;
+	int count() throws ModelException;
+	List<Company> listPaginated(int currentPage, int pageSize) throws ModelException;
 }

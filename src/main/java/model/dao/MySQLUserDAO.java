@@ -1,5 +1,6 @@
 package model.dao;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,15 @@ public class MySQLUserDAO implements UserDAO {
 		db.prepareStatement(sqlDelete);		
 		db.setInt(1, user.getId());
 		
-		return db.executeUpdate() > 0;
+		try {
+			return db.executeUpdate() > 0;
+		} catch (ModelException me) {
+			if (me.getCause() instanceof SQLIntegrityConstraintViolationException)
+				return false;
+
+			throw me;
+		}
+		
 	}
 
 	@Override
@@ -136,5 +145,43 @@ public class MySQLUserDAO implements UserDAO {
 		
 		return u;
 	}
+
+	@Override
+	public int count() throws ModelException {
+		DBHandler db = new DBHandler();
+		String sql = "SELECT COUNT(*) AS total FROM users;";
+		db.prepareStatement(sql);
+		db.executeQuery();
+		
+		if (db.next()) {
+			return db.getInt("total");
+		}
+		return 0;
+	}
+
+@Override
+public List<User> listPaginated(int page, int pageSize) throws ModelException {
+    DBHandler db = new DBHandler();
+    List<User> users = new ArrayList<>();
+    
+    // Calcula quantos registros pular
+    int offset = (page - 1) * pageSize;
+    
+    String sql = "SELECT * FROM users ORDER BY id LIMIT ?, ?;";
+    db.prepareStatement(sql);
+    db.setInt(1, offset);
+    db.setInt(2, pageSize);
+    db.executeQuery();
+    
+    while (db.next()) {
+        User user = new User();
+        user.setId(db.getInt("id"));
+        user.setName(db.getString("nome"));
+        user.setGender(db.getString("sexo"));
+        user.setEmail(db.getString("email"));
+        users.add(user);
+    }
+    return users;
+}
 	
 }

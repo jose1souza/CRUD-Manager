@@ -3,10 +3,10 @@ package model;
 public class Movie {
 	private int id;
 	private String title; // text
-	private Company company;
-	private String duration; // range
-	private String color; // color
-	private String file; // file
+	private Company company; // select (relacionamento FK)
+	private int duration; // range (int em minutos)
+	private String color; // color (#hexadecimal)
+	private String file; // file (nome/caminho como String)
 	
 	public Movie() {
 		this(0);
@@ -15,9 +15,9 @@ public class Movie {
 	public Movie(int id) {
 		this.id = id;
 		setTitle("");
-		setDuration("");
-		setColor("");
-		setFile("");
+		setDuration(120);
+		setColor("#ff0000");
+		setFile("file.mp4");
 	}
 	
 	public int getId() {
@@ -38,10 +38,10 @@ public class Movie {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
-	public String getDuration() {
+	public int getDuration() {
 		return duration;
 	}
-	public void setDuration(String duration) {
+	public void setDuration(int duration) {
 		this.duration = duration;
 	}
 	public String getColor() {
@@ -56,6 +56,4 @@ public class Movie {
 	public void setFile(String file) {
 		this.file = file;
 	}
-	
 }
-
